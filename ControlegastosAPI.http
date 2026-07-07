@@ -1,0 +1,6 @@
+@ControlegastosAPI_HostAddress = http://localhost:5014
+
+GET {{ControlegastosAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
