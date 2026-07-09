@@ -130,3 +130,9 @@ C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\runtimes\win-arm64\native\e_sq
 C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\pette\ControleGastosAPI\obj\Debug\net8.0\ControlegastosAPI.sourcelink.json
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.dll
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
