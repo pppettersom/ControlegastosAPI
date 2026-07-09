@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ControlegastosAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+91a6f356f031337864f3a9a140b1d4da47e0a396")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8b01b4600895b5a925e6d23b3e666b788198e14")]
 [assembly: System.Reflection.AssemblyProductAttribute("ControlegastosAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ControlegastosAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
