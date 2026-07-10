@@ -110,4 +110,19 @@ public class TransactionController : ControllerBase
         return Ok(dbTransaction);
 
     }    
+    [HttpDelete ("{id}")]
+    public async Task<ActionResult> DeleteTransaction (int id)
+    {
+        Transaction? transaction = await _context.Transactions.FindAsync(id);
+        if (transaction == null)
+        {
+            return NotFound("A transação não existe!");
+        }
+
+        _context.Transactions.Remove(transaction);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
 }
