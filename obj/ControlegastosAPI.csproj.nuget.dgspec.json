@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pette\\ControleGastosAPI\\ControlegastosAPI.csproj": {}
+    "C:\\Users\\pette\\ControlegastosAPI\\ControlegastosAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pette\\ControleGastosAPI\\ControlegastosAPI.csproj": {
+    "C:\\Users\\pette\\ControlegastosAPI\\ControlegastosAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pette\\ControleGastosAPI\\ControlegastosAPI.csproj",
+        "projectUniqueName": "C:\\Users\\pette\\ControlegastosAPI\\ControlegastosAPI.csproj",
         "projectName": "ControlegastosAPI",
-        "projectPath": "C:\\Users\\pette\\ControleGastosAPI\\ControlegastosAPI.csproj",
+        "projectPath": "C:\\Users\\pette\\ControlegastosAPI\\ControlegastosAPI.csproj",
         "packagesPath": "C:\\Users\\pette\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pette\\ControleGastosAPI\\obj\\",
+        "outputPath": "C:\\Users\\pette\\ControlegastosAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\pette\\AppData\\Roaming\\NuGet\\NuGet.Config"

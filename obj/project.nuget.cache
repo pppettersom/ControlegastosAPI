@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ffo+WHRQ44o=",
+  "dgSpecHash": "HQ1V9KyWjvY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\pette\\ControleGastosAPI\\ControlegastosAPI.csproj",
+  "projectFilePath": "C:\\Users\\pette\\ControlegastosAPI\\ControlegastosAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pette\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\pette\\.nuget\\packages\\microsoft.aspnetcore.openapi\\8.0.28\\microsoft.aspnetcore.openapi.8.0.28.nupkg.sha512",
