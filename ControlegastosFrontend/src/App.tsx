@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./App.css"
 import type { Person } from "./types/Person";
 import type { Transaction } from "./types/Transaction"
 import type { Summary } from "./types/Summary";
@@ -54,6 +55,7 @@ function App() {
     setType(0);
     setPersonId(0);
     await loadTransactions();
+    loadSummary();
   }
 
   useEffect(() => {
@@ -63,75 +65,162 @@ function App() {
 
   }, []);
   return (
-    <>
-      <h1>Controle de Gastos</h1>
-      <input
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="number"
-        value={age}
-        onChange={(e) => setAge(parseInt(e.target.value))}
-      />
-      <button onClick={createPerson}>
-        Cadastrar Pessoa</button>
+    <div className="container">
+  <h1>Controle de Gastos</h1>
+
+  <div className="section">
+    <h2>Cadastrar Pessoa</h2>
+
+    <input
+      placeholder="Nome"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+    />
+    <label>Idade:</label>
+    <input
+      type="number"
+      placeholder="Idade"
+      value={age}
+      onChange={(e) => setAge(parseInt(e.target.value))}
+    />
+
+    <button onClick={createPerson}>
+      Cadastrar Pessoa
+    </button>
+  </div>
+
+
+  <div className="section">
+    <h2>Pessoas cadastradas</h2>
+
+    {persons.map((person) => (
+      <div className="item" key={person.id}>
+        <p>
+          {person.name} - {person.age} anos
+        </p>
+
+        <button onClick={() => deletePerson(person.id)}>
+          Excluir Pessoa
+        </button>
+      </div>
+    ))}
+  </div>
+
+
+  <div className="section">
+    <h2>Cadastrar Transação</h2>
+
+    <select 
+      value={personId} 
+      onChange={(e) => setPersonId(parseInt(e.target.value))}
+    >
       {persons.map((person) => (
-        <div key={person.id}>
-          <p>
-            {person.name} - {person.age} anos
-          </p>
-          <button onClick={() => deletePerson(person.id)}>Excluir Pessoa</button>
-        </div>
+        <option key={person.id} value={person.id}>
+          {person.name}
+        </option>
       ))}
-      <select value={personId} onChange={(e) => setPersonId(parseInt(e.target.value))}>
-        {persons.map((person) => (
-          <option key={person.id} value={person.id}>
-            {person.name}
-          </option>
-        ))}
-      </select>
-      <input value={description} onChange={(e) => setDescription(e.target.value)} />
-      <input type="number" value={value} onChange={(e) => setValue(parseFloat(e.target.value))} />
-      <select value={type} onChange={(e) => setType(parseInt(e.target.value))}>
-        <option value={1}>
-          Receita
-        </option>
-        <option value={0}>
-          Despesa
-        </option>
+    </select>
 
-      </select>
-      <button onClick={createTransaction}>Cadastrar transação</button>
-      {transactions.map((transaction) => {
-        const person = persons.find(
-          p => p.id === transaction.personId
-        );  
-        return (
-          <div key={transaction.id}>
-            {transaction.description} - {transaction.value} - {transaction.type === 0 ? "Despesa" : "Receita"} - {person?.name}
-          </div>
-        )
-      })}
-      {summary &&(
-        <div>
-          {summary.persons.map((person)=>
-          <div key={person.name}>
-            <p>{person.name}</p>
-            <p>Receitas: {person.totalIncome}</p>
-            <p>Despesas: {person.totalExpense}</p>
-            <p> Saldo: {person.balance}</p>
-            </div>
-          )}
-           <h2>Resumo Geral</h2>
+    <input
+      placeholder="Descrição"
+      value={description}
+      onChange={(e) => setDescription(e.target.value)}
+    />
+    <label>Valor:</label>
+    <input
+      type="number"
+      placeholder="Valor"
+      value={value}
+      onChange={(e) => setValue(parseFloat(e.target.value))}
+    />
 
-        <p>Receitas: {summary.totalIncome}</p>
-        <p>Despesas: {summary.totalExpense}</p>
-        <p>Saldo: {summary.balance}</p>
+    <select 
+      value={type} 
+      onChange={(e) => setType(parseInt(e.target.value))}
+    >
+      <option value={1}>
+        Receita
+      </option>
 
+      <option value={0}>
+        Despesa
+      </option>
+    </select>
+
+    <button onClick={createTransaction}>
+      Cadastrar transação
+    </button>
+  </div>
+
+
+  <div className="section">
+    <h2>Transações</h2>
+
+    {transactions.map((transaction) => {
+      const person = persons.find(
+        p => p.id === transaction.personId
+      );
+
+      return (
+        <div className="item" key={transaction.id}>
+          {transaction.description} - R$ {transaction.value} - 
+          {transaction.type === 0 ? " Despesa" : " Receita"} -
+          {" "}{person?.name}
+        </div>
+      )
+    })}
+  </div>
+
+
+  {summary && (
+    <div className="section">
+
+      <h2>Resumo por pessoa</h2>
+
+      {summary.persons.map((person) =>
+        <div className="item" key={person.name}>
+          <h3>{person.name}</h3>
+
+          <p>
+            Receitas: R$ {person.totalIncome}
+          </p>
+
+          <p>
+            Despesas: R$ {person.totalExpense}
+          </p>
+
+          <p>
+            Saldo: R$ {person.balance}
+          </p>
         </div>
       )}
-    </>
+
+
+      <h2>Resumo Geral</h2>
+
+      <div className="cards">
+
+        <div className="card">
+          <h3>Receitas</h3>
+          <p>R$ {summary.totalIncome}</p>
+        </div>
+
+        <div className="card">
+          <h3>Despesas</h3>
+          <p>R$ {summary.totalExpense}</p>
+        </div>
+
+        <div className="card">
+          <h3>Saldo</h3>
+          <p>R$ {summary.balance}</p>
+        </div>
+
+      </div>
+
+    </div>
+  )}
+
+</div>
   );
 }
 

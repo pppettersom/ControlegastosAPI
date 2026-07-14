@@ -136,3 +136,8 @@ C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Dependenc
 C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Logging.dll
 C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\pette\ControleGastosAPI\bin\Debug\net8.0\Microsoft.Extensions.Options.dll
+C:\Users\pette\ControlegastosAPI\bin\Debug\net8.0\ControlegastosFrontend\package-lock.json
+C:\Users\pette\ControlegastosAPI\bin\Debug\net8.0\ControlegastosFrontend\package.json
+C:\Users\pette\ControlegastosAPI\bin\Debug\net8.0\ControlegastosFrontend\tsconfig.app.json
+C:\Users\pette\ControlegastosAPI\bin\Debug\net8.0\ControlegastosFrontend\tsconfig.json
+C:\Users\pette\ControlegastosAPI\bin\Debug\net8.0\ControlegastosFrontend\tsconfig.node.json
