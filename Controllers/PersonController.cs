@@ -2,7 +2,8 @@ using ControlegastosAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using ControlegastosAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using SQLitePCL;
+using ControlegastosAPI.DTOs;
+using ControlegastosAPI.Enums;
 namespace ControlegastosAPI.Controllers;
 
 [ApiController]
@@ -17,35 +18,47 @@ public class PersonController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Person>>> GetPersons()
+    public async Task<ActionResult<List<PersonResponseDto>>> GetPersons()
     {   //retorna uma lista com as pessoas cadastradas
-        return await _context.Persons.ToListAsync();
+        List<Person>? persons = await _context.Persons.ToListAsync();
+        List<PersonResponseDto> response = new();
+        foreach (Person person in persons)
+        {
+            PersonResponseDto responseDto = new PersonResponseDto();
+
+            responseDto.Id = person.Id;
+            responseDto.Name = person.Name;
+            responseDto.Age = person.Age;
+            response.Add(responseDto);
+        }
+
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Person>> GetPerson(int id)
+    public async Task<ActionResult<PersonResponseDto>> GetPerson(int id)
     {
         //procura a pessoa pelo id, pode ser nulo (?) porque depois fazemos as validações
         Person? person = await _context.Persons.FindAsync(id);
-        
+
         if (person == null)
         {
             return NotFound("A pessoa não foi encontrada!");
         }
+        PersonResponseDto responseDto = new PersonResponseDto();
+        responseDto.Id = person.Id;
+        responseDto.Name = person.Name;
+        responseDto.Age = person.Age;
 
-        return Ok (person);
+        return Ok(responseDto);
     }
     [HttpPut("{id}")]
-    public async Task<ActionResult<Person>> PutPerson (int id, Person person)
+    public async Task<ActionResult<PersonResponseDto>> PutPerson(int id, PersonUpdateDto person)
     {
-        if(id != person.Id)
-        {
-            return BadRequest("O ID da URL é diferente do ID fornecido");
-        }
 
         Person? dbPerson = await _context.Persons.FindAsync(id);
 
-        if(dbPerson == null)
+        if (dbPerson == null)
         {
             return NotFound("A pessoa não foi encontrada!");
         }
@@ -61,11 +74,17 @@ public class PersonController : ControllerBase
         dbPerson.Age = person.Age;
 
         await _context.SaveChangesAsync();
-        return Ok(dbPerson);
+
+        PersonResponseDto responseDto = new PersonResponseDto();
+        responseDto.Id = dbPerson.Id;
+        responseDto.Name = dbPerson.Name;
+        responseDto.Age = dbPerson.Age;
+
+        return Ok(responseDto);
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeletePerson (int id)
+    public async Task<ActionResult> DeletePerson(int id)
     {
         Person? person = await _context.Persons.FindAsync(id);
         if (person == null)
@@ -79,7 +98,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<Person>> CreatePerson(Person person)
+    public async Task<ActionResult<PersonResponseDto>> CreatePerson(PersonCreateDto person)
     {
         if (string.IsNullOrWhiteSpace(person.Name))
         {
@@ -89,12 +108,77 @@ public class PersonController : ControllerBase
         {
             return BadRequest("A idade não pode ser negativa");
         }
+        Person dbPerson = new Person();
+        dbPerson.Name = person.Name;
+        dbPerson.Age = person.Age;
 
-        _context.Persons.Add(person);
+        _context.Persons.Add(dbPerson);
 
         await _context.SaveChangesAsync();
+        PersonResponseDto responseDto = new PersonResponseDto();
+        responseDto.Id = dbPerson.Id;
+        responseDto.Name = dbPerson.Name;
+        responseDto.Age = dbPerson.Age;
+        return Ok(responseDto);
+    }
+    [HttpGet("{id}/summary")]
+    public async Task<ActionResult<PersonSummaryDto>> GetSummary(int id)
+    {
+        Person? person = await _context.Persons.FindAsync(id);
+        if (person == null)
+        {
+            return NotFound("Pessoa não encontrada!");
+        }
 
-        return Ok(person);
+        var incomes = await _context.Transactions.Where(t => t.PersonId == id && t.Type == TransactionType.Income).ToListAsync();
+        var expenses = await _context.Transactions.Where(t => t.PersonId == id && t.Type == TransactionType.Expense).ToListAsync();
+        decimal totalIncomes = incomes.Sum(t => t.Value);
+        decimal totalExpenses = expenses.Sum(t => t.Value);
+        decimal balance = totalIncomes - totalExpenses;
+
+        PersonSummaryDto personSummary = new PersonSummaryDto();
+        personSummary.Name = person.Name;
+        personSummary.TotalIncome = totalIncomes;
+        personSummary.TotalExpense = totalExpenses;
+        personSummary.Balance = balance;
+
+        return Ok(personSummary);
+    }
+
+    [HttpGet("summary")]
+    public async Task<ActionResult<PersonSummaryListDto>> GetSummaryList()
+    {
+        List<Person> persons = await _context.Persons.ToListAsync();
+        List<PersonSummaryDto> listSummary = new();
+        decimal totalIncomes = 0;
+        decimal totalExpenses = 0;
+        foreach (Person person in persons)
+        {
+            PersonSummaryDto responseDto = new PersonSummaryDto();
+            var incomes = await _context.Transactions.Where(t => t.PersonId == person.Id && t.Type == TransactionType.Income).ToListAsync();
+            var expenses = await _context.Transactions.Where(t => t.PersonId == person.Id && t.Type == TransactionType.Expense).ToListAsync();
+            decimal totalIncomesDto = incomes.Sum(t => t.Value);
+            decimal totalExpensesDto = expenses.Sum(t => t.Value);
+            decimal balance = totalIncomesDto - totalExpensesDto;
+            responseDto.Name = person.Name;
+            responseDto.TotalIncome = totalIncomesDto;
+            responseDto.TotalExpense = totalExpensesDto;
+            responseDto.Balance = balance;
+            listSummary.Add(responseDto);
+
+            totalIncomes += totalIncomesDto;
+            totalExpenses +=totalExpensesDto;
+
+        }
+        
+        PersonSummaryListDto summary = new PersonSummaryListDto ();
+        summary.Persons = listSummary;
+        summary.TotalIncome = totalIncomes;
+        summary.TotalExpense = totalExpenses;
+        summary.Balance = totalIncomes - totalExpenses;
+
+        return Ok(summary);
+
     }
 }
 

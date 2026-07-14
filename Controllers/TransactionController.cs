@@ -3,6 +3,7 @@ using ControlegastosAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using ControlegastosAPI.Enums;
+using ControlegastosAPI.DTOs;
 
 namespace ControlegastosAPI.Controllers;
 
@@ -13,13 +14,13 @@ public class TransactionController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public TransactionController (AppDbContext context)
+    public TransactionController(AppDbContext context)
     {
         _context = context;
     }
 
     [HttpPost]
-    public async Task<ActionResult<Transaction>> CreateTransaction(Transaction transaction)
+    public async Task<ActionResult<TransactionResponseDto>> CreateTransaction(TransactionCreateDto transaction)
     {
         if (transaction.Value <= 0)
         {
@@ -30,7 +31,7 @@ public class TransactionController : ControllerBase
             return BadRequest("A descrição não pode estar vazia!");
         }
         Person? person = await _context.Persons.FindAsync(transaction.PersonId);
-        if(person == null)
+        if (person == null)
         {
             return NotFound("A pessoa não foi encontrada!");
         }
@@ -38,19 +39,41 @@ public class TransactionController : ControllerBase
         {
             return BadRequest("Pessoas menores de idade não podem cadastrar receita");
         }
-
-        _context.Transactions.Add(transaction);
+        Transaction dbTransaction = new Transaction();
+        dbTransaction.Description = transaction.Description;
+        dbTransaction.Value = transaction.Value;
+        dbTransaction.Type = transaction.Type;
+        dbTransaction.PersonId = transaction.PersonId;
+        _context.Transactions.Add(dbTransaction);
 
         await _context.SaveChangesAsync();
+        TransactionResponseDto responseTransaction = new TransactionResponseDto();
+        responseTransaction.Id = dbTransaction.Id;
+        responseTransaction.Description = dbTransaction.Description;
+        responseTransaction.Value = dbTransaction.Value;
+        responseTransaction.Type = dbTransaction.Type;
+        responseTransaction.PersonId = dbTransaction.PersonId;
+        return Ok(responseTransaction);
 
-        return Ok(transaction);
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Transaction>>> GetTransactions()
+    public async Task<ActionResult<List<TransactionResponseDto>>> GetTransactions()
     {
         //retorna a lista das transações junto com as pessoas
-         return await _context.Transactions.Include(t => t.Person).ToListAsync();
+        List<Transaction>? transactions = await _context.Transactions.ToListAsync();
+        List<TransactionResponseDto> response = new();
+        foreach (Transaction transaction in transactions)
+        {
+            TransactionResponseDto responseDto = new TransactionResponseDto();
+            responseDto.Id = transaction.Id;
+            responseDto.Description = transaction.Description;
+            responseDto.Type = transaction.Type;
+            responseDto.Value = transaction.Value;
+            responseDto.PersonId = transaction.PersonId;
+            response.Add(responseDto);
+        }
+        return Ok(response);
 
     }
 
@@ -67,15 +90,10 @@ public class TransactionController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Transaction>> PutTransaction (int id, Transaction transaction)
+    public async Task<ActionResult<TransactionResponseDto>> PutTransaction(int id, TransactionUpdateDto transaction)
     {
-        if(id != transaction.Id)
-        {
-            return BadRequest("O Id da URL é diferente do Id fornecido");
-        }
-
         Transaction? dbTransaction = await _context.Transactions.FindAsync(id);
-        
+
         if (dbTransaction == null)
         {
             return NotFound("Não existe transação cadastrada");
@@ -107,11 +125,18 @@ public class TransactionController : ControllerBase
         dbTransaction.PersonId = transaction.PersonId;
 
         await _context.SaveChangesAsync();
-        return Ok(dbTransaction);
 
-    }    
-    [HttpDelete ("{id}")]
-    public async Task<ActionResult> DeleteTransaction (int id)
+        TransactionResponseDto responseTransaction = new TransactionResponseDto();
+        responseTransaction.Id = dbTransaction.Id;
+        responseTransaction.Description = dbTransaction.Description;
+        responseTransaction.Value = dbTransaction.Value;
+        responseTransaction.Type = dbTransaction.Type;
+        responseTransaction.PersonId = dbTransaction.PersonId;
+        return Ok(responseTransaction);
+
+    }
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteTransaction(int id)
     {
         Transaction? transaction = await _context.Transactions.FindAsync(id);
         if (transaction == null)
