@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+// CORS da a permissão para o frontend acessar a API
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactPolicy", policy =>

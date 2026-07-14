@@ -14,6 +14,9 @@ public class AppDbContext : DbContext
     
     public DbSet<Person> Persons {get; set;}
     public DbSet<Transaction> Transactions {get;set;}
+    
+    
+    //Método para deletar as transações quando as pessoas forem deletadas
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

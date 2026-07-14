@@ -55,7 +55,7 @@ public class PersonController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<PersonResponseDto>> PutPerson(int id, PersonUpdateDto person)
     {
-
+        //Editar a pessoa
         Person? dbPerson = await _context.Persons.FindAsync(id);
 
         if (dbPerson == null)
@@ -98,6 +98,7 @@ public class PersonController : ControllerBase
     }
 
     [HttpPost]
+    //Cria a pessoa com os dados recebidos
     public async Task<ActionResult<PersonResponseDto>> CreatePerson(PersonCreateDto person)
     {
         if (string.IsNullOrWhiteSpace(person.Name))
@@ -122,6 +123,7 @@ public class PersonController : ControllerBase
         return Ok(responseDto);
     }
     [HttpGet("{id}/summary")]
+    //Faz o resumo da pessoa, calcula as entradas e saídas e depois mostra o saldo
     public async Task<ActionResult<PersonSummaryDto>> GetSummary(int id)
     {
         Person? person = await _context.Persons.FindAsync(id);
@@ -129,7 +131,7 @@ public class PersonController : ControllerBase
         {
             return NotFound("Pessoa não encontrada!");
         }
-
+        //faz listas com os valores de entrada e saída, porque o SQLite não faz a soma diretamente com os valores
         var incomes = await _context.Transactions.Where(t => t.PersonId == id && t.Type == TransactionType.Income).ToListAsync();
         var expenses = await _context.Transactions.Where(t => t.PersonId == id && t.Type == TransactionType.Expense).ToListAsync();
         decimal totalIncomes = incomes.Sum(t => t.Value);
@@ -167,11 +169,11 @@ public class PersonController : ControllerBase
             listSummary.Add(responseDto);
 
             totalIncomes += totalIncomesDto;
-            totalExpenses +=totalExpensesDto;
+            totalExpenses += totalExpensesDto;
 
         }
-        
-        PersonSummaryListDto summary = new PersonSummaryListDto ();
+
+        PersonSummaryListDto summary = new PersonSummaryListDto();
         summary.Persons = listSummary;
         summary.TotalIncome = totalIncomes;
         summary.TotalExpense = totalExpenses;
